@@ -8,8 +8,7 @@ import (
 )
 
 func TestSince(t *testing.T) {
-	// 1. Définition des cas de test
-	tests := []struct {
+	testsSince := []struct {
 		name    string
 		input   any
 		want    string
@@ -31,29 +30,60 @@ func TestSince(t *testing.T) {
 			name:    "String avec mauvais format",
 			input:   "2026/01/01",
 			want:    "",
-			wantErr: true, // On s'attend à une erreur
+			wantErr: true,
 		},
 		{
 			name:    "Type non supporté (int)",
 			input:   12345,
 			want:    "",
-			wantErr: true, // On s'attend à une erreur
+			wantErr: true,
 		},
 	}
 
-	// 2. Exécution de chaque cas
-	for _, tt := range tests {
+	for _, tt := range testsSince {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := timed.Since(tt.input)
 
-			// Vérification de la présence d'une erreur
 			if (err != nil) != tt.wantErr {
 				t.Fatalf("Since() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			// Vérification du résultat obtenu
 			if got != tt.want {
 				t.Errorf("Since() = %q, want %q", got, tt.want)
+			}
+		})
+	}
+
+	testsUntil := []struct {
+		name    string
+		input   any
+		want    string
+		wantErr bool
+	}{
+		{
+			name:    "In 2 days",
+			input:   time.Now().Add(2 * 24 * time.Hour),
+			want:    "In 2 days",
+			wantErr: false,
+		},
+		{
+			name:    "In 1 days and 3 hours",
+			input:   time.Now().Add(24 * time.Hour).Add(3 * time.Hour),
+			want:    "In 1 days",
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range testsUntil {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := timed.Until(tt.input)
+
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("Until() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if got != tt.want {
+				t.Errorf("Until() = %q, want %q", got, tt.want)
 			}
 		})
 	}
