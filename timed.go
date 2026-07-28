@@ -26,8 +26,6 @@ func Since(date any) (string, error) {
 
 	duration := time.Since(targetTime)
 
-	fmt.Println(formatDuration(duration))
-
 	return formatDuration(duration), nil
 }
 
